@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.cn.hnust.dao.SuppCustomerDao">
+
+    <resultMap type="com.cn.hnust.pojo.SuppCustomer" id="SuppCustomerResult">
+        <id column="supp_customer_id" jdbcType="INTEGER" property="suppCustomerId"/>
+        <result column="supp_customer_supptype" jdbcType="VARCHAR" property="suppCustomerSupptype"/>
+        <result column="supp_customer_company" jdbcType="VARCHAR" property="suppCustomerCompany"/>
+        <result column="supp_customer_chargeperson" jdbcType="VARCHAR" property="suppCustomerChargePerson"/>
+        <result column="supp_customer_issign" jdbcType="VARCHAR" property="suppCustomerIssign"/>
+        <result column="supp_customer_signtime" jdbcType="VARCHAR" property="suppCustomerSigntime"/>
+        <result column="supp_customer_isproduct" jdbcType="VARCHAR" property="suppCustomerIsproduct"/>
+        <result column="supp_customer_status" jdbcType="VARCHAR" property="suppCustomerStatus"/>
+        <result column="supp_customer_registercapital" jdbcType="VARCHAR" property="suppCustomerRegisterCapital"/>
+    </resultMap>
+
+    <sql id="SuppCustomerContent">
+        supp_customer_id,supp_customer_supptype,supp_customer_company,
+        supp_customer_chargeperson,supp_customer_issign,
+        supp_customer_signtime,supp_customer_isproduct,
+        supp_customer_status,supp_customer_registercapital 
+    </sql>
+    
+    <sql id="ConditionSql">
+        <if test="suppCustomerCompany != ''">
+            supp_customer_company like CONCAT('%',#{suppCustomerCompany},'%')
+        </if>
+        <if test="suppCustomerChargeperson != ''">
+            supp_customer_chargeperson = #{suppCustomerChargeperson} 
+        </if>
+        <if test="suppCustomerIssign != ''">
+            supp_customer_issign = #{suppCustomerIssign} 
+        </if>
+        <if test="suppCustomerStatus != ''">
+            supp_customer_status = #{suppCustomerStatus}
+        </if>
+        <if test="suppCustomerSupptype != ''">
+            supp_customer_supptype = #{suppCustomerSupptype} 
+        </if>
+    </sql>
+    
+    <select id="findBySupp_customer_id" resultMap="SuppCustomerResult" parameterType="int">
+        select 
+        <include refid="SuppCustomerContent"></include> 
+        from supp_customer 
+        where supp_customer_id = #{supp_customer_id}
+    </select>
+
+    <select id="findCustomersByCondition" resultMap="SuppCustomerResult" parameterType="com.cn.hnust.selectCondition.CustomerCondition" >
+        select 
+        <include refid="SuppCustomerContent"></include> 
+        from supp_customer 
+        <where>
+            <include refid="ConditionSql"></include>
+        </where>
+        order by supp_customer_signtime asc
+    </select>
+
+    <select id="countCustomersByCondition" resultType="int" parameterType="com.cn.hnust.selectCondition.CustomerCondition" >
+        select 
+        count(*) 
+        from supp_customer 
+        <where>
+            <include refid="ConditionSql"></include>
+        </where>
+    </select>
+
+    <delete id="deleteCustomerBySupp_customer_id" parameterType="int">
+        delete from supp_customer where supp_customer_id = #{supp_customer_id}
+    </delete>
+
+    <update id="updateCustomerBySupp_customer" parameterType="com.cn.hnust.pojo.SuppCustomer">
+        update supp_customer set
+        supp_customer_supptype=#{suppCustomerSupptype},
+        supp_customer_company=#{suppCustomerCompany},
+        supp_customer_chargeperson=#{suppCustomerChargePerson},
+        supp_customer_issign=#{suppCustomerIssign},
+        supp_customer_signtime=#{suppCustomerSigntime},
+        supp_customer_isproduct=#{suppCustomerIsproduct},
+        supp_customer_status=#{suppCustomerStatus},
+        supp_customer_registercapital=#{suppCustomerRegisterCapital} 
+        where supp_customer_id = #{suppCustomerId}
+    </update>
+ 
+    <insert id="insertCustomerBySequence" parameterType="com.cn.hnust.pojo.SuppCustomer"
+            useGeneratedKeys="true" keyProperty="suppCustomerId">
+        insert into supp_customer(
+        <include refid="SuppCustomerContent"></include>
+        ) 
+        values(
+        #{suppCustomerId},#{suppCustomerSupptype},#{suppCustomerCompany},
+        #{suppCustomerChargePerson},#{suppCustomerIssign},
+        #{suppCustomerSigntime},#{suppCustomerIsproduct},
+        #{suppCustomerStatus},#{suppCustomerRegisterCapital})
+    </insert>
+    
+</mapper>

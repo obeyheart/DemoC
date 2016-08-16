@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.hnust.dao.SuppUserDao">
+
+    <resultMap type="com.cn.hnust.pojo.NewSuppUser" id="newUserResult">
+        <id column="supp_user_nickname" jdbcType="VARCHAR" property="suppUserNickname"/>
+        <result column="supp_user_name" jdbcType="VARCHAR" property="suppUserName"/>
+        <result column="supp_role_name" jdbcType="VARCHAR" property="suppRoleName"/>
+        <result column="supp_user_begintime" jdbcType="DATE" property="suppUserBegintime"/>
+        <result column="supp_user_endtime" jdbcType="DATE" property="suppUserEndtime"/>
+        <result column="supp_user_department" jdbcType="VARCHAR" property="suppUserDepartment"/>
+        <result column="supp_user_position" jdbcType="VARCHAR" property="suppUserPosition"/>
+        <result column="supp_user_officephone1" jdbcType="VARCHAR" property="suppUserOfficephone1"/>
+        <result column="supp_user_officephone2" jdbcType="VARCHAR" property="suppUserOfficephone2"/>
+        <result column="supp_user_mobilephone" jdbcType="VARCHAR" property="suppUserMobilephone"/>
+        <result column="supp_user_fax" jdbcType="VARCHAR" property="suppUserFax"/>
+        <result column="supp_user_email" jdbcType="VARCHAR" property="suppUserEmail"/>
+        <result column="supp_user_qq" jdbcType="VARCHAR" property="suppUserQQ"/>
+    </resultMap>
+    
+    <select id="findBySupp_user_nickname" resultMap="newUserResult" parameterType="String">
+        select 
+        supp_user_nickname,supp_user_name,supp_role_name,
+        supp_user_begintime,supp_user_endtime,
+        supp_user_department,supp_user_position,
+        supp_user_officephone1,supp_user_officephone2,
+        supp_user_mobilephone,supp_user_fax,
+        supp_user_email,supp_user_qq 
+        from supp_user natural join supp_role 
+        where supp_user_nickname=#{suppUserNickname}
+    </select>
+
+    <select id="findUsersByCondition" resultMap="newUserResult" parameterType="com.cn.hnust.selectCondition.UserCondition" >
+        select 
+        supp_user_nickname,supp_user_name,supp_role_name,
+        supp_user_begintime,supp_user_endtime,
+        supp_user_department,supp_user_position,
+        supp_user_officephone1,supp_user_officephone2,
+        supp_user_mobilephone,supp_user_fax,
+        supp_user_email,supp_user_qq 
+        from supp_user natural join supp_role
+        <where>
+            <if test="suppRoleName != ''">
+                and supp_role_name = #{suppRoleName}
+            </if>
+            <if test="suppUserNickname != ''">
+                and supp_user_nickname = #{suppUserNickname} 
+            </if>
+        </where>
+    </select>
+
+    <select id="countUsersByCondition" resultType="int" parameterType="com.cn.hnust.selectCondition.UserCondition" >
+        select 
+        count(*) 
+        from supp_user natural join supp_role
+        <where>
+            <if test="supp_role_name != ''">
+                and supp_role_name = #{supp_role_name} 
+            </if>
+            <if test="supp_role_name != ''">
+                and supp_user_nickname = #{supp_user_nickname} 
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteUserBySupp_user_nickname" parameterType="String">
+        delete from supp_user where supp_user_nickname = #{supp_user_nickname}     
+    </delete>
+
+    <update id="updateUserByUser" parameterType="com.cn.hnust.pojo.SuppUser">
+        update supp_user set
+        supp_user_name=#{suppUserName},supp_role_id=#{suppRoleId},
+        supp_user_begintime=#{suppUserBegintime},supp_user_endtime=#{suppUserEndtime},
+        supp_user_department=#{suppUserDepartment},supp_user_position=#{suppUserPosition},
+        supp_user_officephone1=#{suppUserOfficephone1},supp_user_officephone2=#{suppUserOfficephone2},
+        supp_user_mobilephone=#{suppUserMobilephone},supp_user_fax=#{suppUserFax},
+        supp_user_email=#{suppUserEmail},supp_user_qq=#{suppUserQQ} 
+        where supp_user_nickname = #{suppUserNickname}
+    </update>
+
+    <insert id="insertUserByUser" parameterType="com.cn.hnust.pojo.SuppUser">
+        insert into supp_user(
+        supp_user_nickname,supp_user_name,supp_role_id,
+        supp_user_begintime,supp_user_endtime,
+        supp_user_department,supp_user_position,
+        supp_user_officephone1,supp_user_officephone2,
+        supp_user_mobilephone,supp_user_fax,
+        supp_user_email,supp_user_qq) 
+        values(
+        #{suppUserNickname},#{suppUserName},#{suppRoleId},
+        #{suppUserBegintime},#{suppUserEndtime},
+        #{suppUserDepartment},#{suppUserPosition},
+        #{suppUserOfficephone1},#{suppUserOfficephone2},
+        #{suppUserMobilephone},#{suppUserFax},
+        #{suppUserEmail},#{suppUserQQ})
+    </insert>
+    
+</mapper>
